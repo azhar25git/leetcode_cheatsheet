@@ -1,0 +1,47 @@
+/* COLOR SCIENCE SYSTEM */
+:root {
+    /* Dark Theme: High-End IDE Palette */
+    --bg-main: #020617;     /* Slate 950 */
+    --bg-nav: #0f172a;      /* Slate 900 */
+    --bg-card: #0f172a;     /* Slate 900 */
+    --bg-code: #020617;     /* Slate 950 */
+    --border: #1e293b;      /* Slate 800 - Precise contrast */
+    --accent: #38bdf8;      /* Sky 400 - Neon Tech */
+    --text-main: #f1f5f9;   /* Slate 100 */
+    --text-muted: #64748b;  /* Slate 500 */
+    
+    /* Code Highlighting - Solid Colors */
+    --kw: #e879f9; --fn: #38bdf8; --st: #4ade80; --cm: #475569; --nm: #fb923c;
+}
+
+body.light {
+    /* Light Theme: Clean Paper Palette */
+    --bg-main: #f8fafc;     /* Slate 50 */
+    --bg-nav: #ffffff;      /* White */
+    --bg-card: #ffffff;     /* White */
+    --bg-code: #f1f5f9;     /* Slate 100 */
+    --border: #cbd5e1;      /* Slate 300 - Visible but light */
+    --accent: #0284c7;      /* Sky 600 - High Contrast for Light */
+    --text-main: #0f172a;   /* Slate 900 */
+    --text-muted: #475569;  /* Slate 600 */
+    
+    /* Code Highlighting - Solid Colors */
+    --kw: #a21caf; --fn: #0369a1; --st: #15803d; --cm: #94a3b8; --nm: #c2410c;
+}
+
+body {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+/* Precise Borders */
+.border-accent { border-color: var(--accent); }
+.border-theme  { border-color: var(--border); }
+
+/* Syntax Highlighting */
+.kw { color: var(--kw); font-weight: 600; }
+.fn { color: var(--fn); }
+.st { color: var(--st); }
+.cm { color: var(--cm); }
+.nm { color: var(--nm); }

@@ -1,0 +1,69 @@
+# ----------------------------------------------------------------------
+# 1. ENTRANCE & ROUTING (Flight PHP)
+# ----------------------------------------------------------------------
+RewriteEngine On
+
+# Ensure the request isn't for an actual file or directory
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Send everything else to index.php
+RewriteRule ^(.*)$ index.php [QSA,L]
+
+# ----------------------------------------------------------------------
+# 2. DISABLE DIRECTORY BROWSING
+# ----------------------------------------------------------------------
+# Prevents hackers from seeing your folder structure if index.php is missing
+Options -Indexes
+
+# ----------------------------------------------------------------------
+# 3. PROTECT SENSITIVE FILES
+# ----------------------------------------------------------------------
+# Block access to the data folder, logs, and config files
+<FilesMatch "\.(php|ini|log|sh|inc|swp|dist|bak|php~)$">
+    # Allow index.php, but block direct access to files in /data/
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Specifically allow the front controller
+<Files index.php>
+    Allow from all
+</Files>
+
+# Block access to hidden files (like .git, .env, .htaccess)
+RewriteRule "(^|/)\." - [F]
+
+# ----------------------------------------------------------------------
+# 4. SECURITY HEADERS (Mitigate XSS, Clickjacking, and Sniffing)
+# ----------------------------------------------------------------------
+<IfModule mod_headers.c>
+    # Prevents the site from being embedded in an iframe (Anti-Clickjacking)
+    Header set X-Frame-Options "SAMEORIGIN"
+
+    # Prevents the browser from "sniffing" the assets to guess MIME types
+    Header set X-Content-Type-Options "nosniff"
+
+    # Enables the XSS Filter in most modern browsers
+    Header set X-XSS-Protection "1; mode=block"
+
+    # Strict Transport Security (HSTS) - Force HTTPS (Uncomment if using SSL)
+    # Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+
+    # Content Security Policy (Basic) - Only allow scripts from your own domain
+    # Header set Content-Security-Policy "default-src 'self'; script-src 'self' cdn.tailwindcss.com fonts.googleapis.com; style-src 'self' 'unsafe-inline' fonts.googleapis.com;"
+</IfModule>
+
+# ----------------------------------------------------------------------
+# 5. BLOCK EXPLOITS
+# ----------------------------------------------------------------------
+# Block common SQL injection and Script Injection attempts in the URL
+RewriteCond %{QUERY_STRING} (<|%3C).*script.*(>|%3E) [NC,OR]
+RewriteCond %{QUERY_STRING} GLOBALS(=|\[|\%[0-9A-Z]{0,2}) [OR]
+RewriteCond %{QUERY_STRING} _REQUEST(=|\[|\%[0-9A-Z]{0,2})
+RewriteRule ^(.*)$ index.php [F,L]
+
+# ----------------------------------------------------------------------
+# 6. LIMIT FILE UPLOAD SIZE (Example: 2MB)
+# ----------------------------------------------------------------------
+LimitRequestBody 2097152
